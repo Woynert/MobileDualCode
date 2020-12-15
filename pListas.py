@@ -24,9 +24,10 @@ def addSpace(max, txt):
 	return(rtxt)
 
 #Imprimir Items
-def imprimirItems(topic):
+def imprimirItems(topicId):
 
-	print("\n === ITEMS DE " + topic.name + " === ")
+	_topic = topicList[topicId]
+	print("\n === ITEMS DE " + _topic.name + " === ")
 	titles = ["ID", "NOMBRE", "DESCRIPCION"]
 	txt = ""
 
@@ -38,18 +39,18 @@ def imprimirItems(topic):
 	txt = ""
 
 	#Print content
-	for i in range(0, len(topic.itemList)):
+	for i in range(0, len(_topic.itemList)):
 		txt = ""
 		#Id
 		item = str(i)
 		txt += item + addSpace(10, item)
 
 		#Name
-		item = topic.itemList[i].name
+		item = _topic.itemList[i].name
 		txt += item + addSpace(10, item)
 
 		#Descripcion
-		item = topic.itemList[i].desc
+		item = _topic.itemList[i].desc
 		txt += item + addSpace(10, item)
 		print(txt)
 
@@ -58,13 +59,13 @@ def imprimirItems(topic):
 def imprimirTopicos():
 
 	print("\n === TOPICOS === ")
-	titles = ["ID", "NOMBRE"]
+	titles = ["ID", "NOMBRE", "ITEMS"]
 	txt = ""
 
 	#Print titles
 	for item in titles:
 		txt += item
-		txt += addSpace(10, item)
+		txt += addSpace(13, item)
 	print(txt)
 	txt = ""
 
@@ -73,11 +74,15 @@ def imprimirTopicos():
 		txt = ""
 		#Id
 		item = str(i)
-		txt += item + addSpace(10, item)
+		txt += item + addSpace(13, item)
 
 		#Name
 		item = topicList[i].name
-		txt += item + addSpace(10, item)
+		txt += item + addSpace(13, item)
+
+		#Items
+		item = str(len(topicList[i].itemList))
+		txt += item + addSpace(13, item)
 		print(txt)
 
 #Menus
@@ -89,6 +94,7 @@ def menuTopic():
 	print("1. Agregar topico")
 	print("2. Eliminar topico")
 	print("3. Renombrar topico")
+	print("4. Abrir topico")
 
 	ent = int(input("-> "))
 
@@ -107,13 +113,92 @@ def menuTopic():
 		#Eliminar
 		topicList.pop(_id)
 
+	elif (ent == 3):
+		print("\n --- Renombrar Topico --- ")
+		imprimirTopicos() #Mostrar
+		_id = int(input("Id: "))
+
+		#Seleccionar ID
+		_newname = input("Nuevo nombre: ")
+		topicList[_id].name = _newname
+
+	elif (ent == 4):
+		print("\n --- Abrir Topico --- ")
+		imprimirTopicos() #Mostrar
+		_id = int(input("Id: "))
+
+		#Abrir
+		global topicSelID
+		topicSelID = _id
+		menuItems()
+
 	menuTopic()
+
+def menuItems():
+
+	goback = False
+
+	printBlank()
+	imprimirItems(topicSelID)
+
+	print("\n --- Opciones --- ")
+	print("1. Agregar item")
+	print("2. Eliminar item")
+	print("3. Renombrar item")
+	print("4. Editar descripcion")
+	print("5. Salir de topico " + topicList[topicSelID].name)
+
+	ent = int(input("-> "))
+
+	printBlank()
+	if (ent == 1):
+		
+		print("\n --- Agregar Item --- ")
+		imprimirItems(topicSelID) #Mostrar
+		_name = input("Nombre: ")
+		_desc = input("Descripción: ")
+
+		#Agregar
+		topicList[topicSelID].itemList.append(Item(name = _name, desc = _desc))
+
+	elif (ent == 2):
+		print("\n --- Eliminar Item --- ")
+		imprimirItems(topicSelID) #Mostrar
+		_id = int(input("Id: "))
+
+		#Eliminar
+		topicList[topicSelID].itemList.pop(_id)
+
+	elif (ent == 3):
+		print("\n --- Renombrar Item --- ")
+		imprimirItems(topicSelID) #Mostrar
+		_id = int(input("Id: "))
+
+		#Seleccionar ID
+		_newname = input("Nuevo nombre: ")
+		topicList[topicSelID].itemList[_id].name = _newname
+
+	elif (ent == 4):
+		print("\n --- Editar Descripcion --- ")
+		imprimirItems(topicSelID) #Mostrar
+		_id = int(input("Id: "))
+
+		#Seleccionar ID
+		_newdesc = input("Nueva Descripción: ")
+		topicList[topicSelID].itemList[_id].desc = _newdesc
+
+	elif (ent == 5): #Regresar
+		goback = True
+
+	if (not goback):
+		menuItems()
 
 def printBlank():
 	for l in range(0, 100):
 		print("\n")
 
 #Variables
+topicSelID = 0
 topicList = []
 
 _itemList = []
